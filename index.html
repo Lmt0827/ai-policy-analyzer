@@ -175,7 +175,7 @@ function initCharts(type) {
     const months = Object.keys(dateCount).sort();
     const kwCanvas = document.getElementById('keywordChart-' + type);
     if (kwCanvas) {
-        new Chart(kwCanvas, {type:'bar',data:{labels:sortedTags.map(function(t){return t[0];}),datasets:[{label:'出现频次',data:sortedTags.map(function(t){return t[1];}),backgroundColor:isDomestic?'rgba(239,68,68,0.7)':'rgba(59,130,246,0.7)',borderColor:isDomestic?'rgb(239,68,68)':'rgb(59,130,246)',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}});
+        new Chart(kwCanvas, {type:'bar',data:{labels:sortedTags.map(function(t){return t[0];}),datasets:[{label:'出现频次',data:sortedTags.map(function(t){return t[1];}),backgroundColor:isDomestic?'rgba(239,68,68,0.7)':'rgba(59,130,246,0.7)',borderColor:isDomestic?'rgb(239,68,68)':'rgb(59,130,246)',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}}})
     }
     const regCanvas = document.getElementById('regionChart-' + type);
     if (regCanvas) {
@@ -183,7 +183,7 @@ function initCharts(type) {
     }
     const trendCanvas = document.getElementById('trendChart-' + type);
     if (trendCanvas) {
-        new Chart(trendCanvas, {type:'line',data:{labels:months.map(function(m){return monthNames[m]||m;}),datasets:[{label:'政策发布数量',data:months.map(function(m){return dateCount[m];}),borderColor:isDomestic?'#ef4444':'#3b82f6',backgroundColor:isDomestic?'rgba(239,68,68,0.1)':'rgba(59,130,246,0.1)',fill:true,tension:0.4,pointRadius:5,pointBackgroundColor:isDomestic?'#ef4444':'#3b82f6'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});
+        new Chart(trendCanvas, {type:'line',data:{labels:months.map(function(m){return monthNames[m]||m;}),datasets:[{label:'政策发布数量',data:months.map(function(m){return dateCount[m];}),borderColor:isDomestic?'#ef4444':'#3b82f6',backgroundColor:isDomestic?'rgba(239,68,68,0.1)':'rgba(59,130,246,0.1)',fill:true,tension:0.4,pointRadius:5,pointBackgroundColor:isDomestic?'#ef4444':'#3b82f6'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}})
     }
 }
 
