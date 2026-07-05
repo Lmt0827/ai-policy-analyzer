@@ -19,11 +19,9 @@
         .keyword-tag { animation: fadeInUp 0.5s ease forwards; opacity: 0; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .chart-container { position: relative; height: 300px; }
-        .pdf-page { page-break-after: always; }
-        @media print { .no-print { display: none !important; } }
-        .gradient-text { background: linear-gradient(135deg, #1e40af, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .source-link { color: #2563eb; text-decoration: underline; cursor: pointer; }
         .source-link:hover { color: #1d4ed8; }
+        .gradient-text { background: linear-gradient(135deg, #1e40af, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -52,20 +50,189 @@
     <div class="bg-white border-b no-print">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex space-x-8">
-                <button onclick="switchTab('domestic')" id="tab-domestic" class="tab-active py-4 px-2 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:text-gray-700 transition">
-                    &#127464;&#127475; 国内政策分析
-                </button>
-                <button onclick="switchTab('international')" id="tab-international" class="py-4 px-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition">
-                    &#127760; 国外政策分析
-                </button>
+                <button onclick="switchTab('domestic')" id="tab-domestic" class="tab-active py-4 px-2 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:text-gray-700 transition">&#127464;&#127475; 国内政策分析</button>
+                <button onclick="switchTab('international')" id="tab-international" class="py-4 px-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition">&#127760; 国外政策分析</button>
             </div>
         </div>
     </div>
 
-    <main id="content-area" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    </main>
+    <main id="content-area" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></main>
 
-    <script src="data.js"></script>
-    <script src="app.js"></script>
+<script>
+// 所有字符串使用单引号包裹，避免中文引号冲突
+const domesticPolicies = [
+    {date:'2026-07-02',title:'《加快推进人工智能赋能科学研究实施方案（2026—2028年）》',level:'地方',region:'北京',publisher:'中共北京市委教育科技人才工作领导小组',supervisor:'北京市科委、中关村管委会',source:'http://finance.people.com.cn/n1/2026/0703/c1004-40752511.html',highlights:['到2028年AI赋能科学研究基础理论和关键技术取得重大原创突破','努力建成辐射全球的科学智能创新中枢','围绕自主实验室建设、标杆场景应用、科学模型构建、科学数据供给、创新生态营造五大方向'],diff:'此前北京发布的AI政策多集中于产业应用，本次方案首次专门针对科学研究领域，强调AI for Science方向，填补了基础研究赋能的政策空白。',tags:['AI for Science','科学研究','北京','创新中枢']},
+    {date:'2026-07-01',title:'《互联网信息服务算法推荐管理规定》修订草案征求意见',level:'中央',region:'全国',publisher:'国家互联网信息办公室',supervisor:'国家网信办、工信部、公安部、市场监管总局',source:'https://content-static.cctvnews.cctv.com/snow-book/index.html?channelId=1215&item_id=13364574677984378860',highlights:['专门设置\'智能信息服务\'专节','对应用人工智能技术提供互联网信息服务进行规范','要求采取技术、人工等方式加强对生成合成信息内容的管理'],diff:'相较于2022年原规定，本次修订新增了对AI生成内容的专门管理要求，明确将AIGC纳入算法监管范围，体现了监管从推荐算法向生成式AI的延伸。',tags:['算法备案','AIGC','内容监管','网信办']},
+    {date:'2026-06-17',title:'《深圳市龙岗区关于支持人工智能产业引领高质量发展若干措施（修订版）》',level:'地方',region:'深圳龙岗区',publisher:'深圳市龙岗区工业和信息化局',supervisor:'龙岗区人民政府',source:'https://www.lg.gov.cn/gkmlpt/content/12/12847/mpost_12847331.html',highlights:['对AI企业给予租金补贴、研发资助、人才引进等多维度支持','重点支持大模型、智能芯片、机器人等核心领域','设立专项产业基金'],diff:'修订版在原版基础上加大了对大模型企业的扶持力度，新增算力补贴条款，并将补贴上限提高50%，反映了深圳对AI产业竞争的紧迫性。',tags:['深圳','产业扶持','大模型','算力补贴']},
+    {date:'2026-06-03',title:'《\'人工智能+信息通信\'创新发展实施意见（2026—2028年）》',level:'中央',region:'全国',publisher:'工业和信息化部',supervisor:'工信部信息通信发展司',source:'https://m.thepaper.cn/newsDetail_forward_33520036',highlights:['至2028年培育30个以上高价值AI融合应用场景','围绕推动信息通信行业智能化升级等四个方面部署17项具体任务','夯实人工智能发展底座、深化融合应用创新推广'],diff:'这是工信部首个专门针对\'AI+信息通信\'的综合性文件，将AI与5G、算力网络等新型基础设施深度融合，与此前单一技术政策形成互补。',tags:['工信部','5G','算力网络','融合应用']},
+    {date:'2026-04-10',title:'《人工智能拟人化互动服务管理暂行办法》',level:'中央',region:'全国',publisher:'国家网信办、国家发改委、工信部、公安部、市场监管总局',supervisor:'国家网信办',source:'http://cpc.people.com.cn/BIG5/n1/2026/0413/c64387-40700176.html',highlights:['自2026年7月15日起施行','规范AI数字人、虚拟主播等拟人化服务','要求显著标识AI生成内容，保护用户知情权','建立内容审核和安全评估机制'],diff:'这是中国首部专门针对AI拟人化互动服务的部门规章，填补了数字人服务监管空白。相比《生成式AI服务管理暂行办法》，更聚焦交互场景和身份标识问题。',tags:['数字人','拟人化','内容标识','七部门']},
+    {date:'2026-03-15',title:'《人工智能科技伦理审查与服务办法（试行）》',level:'中央',region:'全国（先导区试点）',publisher:'工信部、国家发改委、教育部、科技部等十部门',supervisor:'工信部科技司',source:'https://www.smartcity.team/policies/大模型政策库/ai伦理管理制度/',highlights:['在北京、上海、广东、山东、天津、四川、江苏、湖北、湖南、浙江等先导区省份实施','建立科技伦理审查制度','设立人工智能伦理委员会'],diff:'首次在国家层面建立AI伦理审查制度，与2023年的《科技伦理审查办法》相比，专门针对AI领域细化审查标准和流程，体现从通用科技伦理向AI专项伦理的深化。',tags:['科技伦理','审查制度','先导区','十部门']}
+];
+
+const internationalPolicies = [
+    {date:'2026-07-05',title:'EU Digital Omnibus on AI Political Agreement',level:'国家/联盟',country:'欧盟',publisher:'European Commission, European Parliament, Council of the EU',source:'https://ec.europa.eu/commission/presscorner/detail/en/mex_26_1030',highlights:['Simpler, innovation-friendly rules for AI','Maintains benefits for European society, safety and fundamental rights','Sets clear implementation timeline for businesses'],diff:'The Omnibus amends the AI Act to simplify implementation for EU businesses while maintaining core protections. Compared to the original AI Act (2024), it reduces reporting burdens for SMEs and clarifies high-risk system definitions.',tags:['EU AI Act','Omnibus','Simplification','SMEs']},
+    {date:'2026-06-04',title:'AI for All: Canada\'s New National AI Strategy',level:'国家',country:'加拿大',publisher:'Government of Canada, Prime Minister\'s Office',source:'https://www.pm.gc.ca/en/news/speeches/2026/06/04/prime-minister-carney-launches-ai-all-canadas-new-national-artificial',highlights:['Three guiding principles: Trust, Opportunity, Leadership','Protect data, privacy, and children','Empower Canadian workers, businesses, and students','Establish Canada as a global AI leader'],diff:'Replaces the 2017 Pan-Canadian AI Strategy. The new strategy shifts focus from pure research to broader societal integration, emphasizing governance and inclusivity alongside innovation.',tags:['Canada','National Strategy','Trust','Inclusivity']},
+    {date:'2026-06-02',title:'Executive Order on Promoting Advanced AI Innovation and Security',level:'国家',country:'美国',publisher:'The White House, President Donald J. Trump',source:'https://www.whitehouse.gov/presidential-actions/2026/06/promoting-advanced-artificial-intelligence-innovation-and-security/',highlights:['Promotes AI innovation while strengthening cybersecurity','Explicitly prohibits mandatory governmental licensing for AI models','America First cybersecurity effort','Protects American ingenuity and IP from adversaries'],diff:'Reverses the Biden Administration\'s more regulatory approach (EO 14110). The Trump EO eliminates licensing requirements and shifts to voluntary, industry-led frameworks. This represents a fundamental deregulation pivot from the previous administration\'s mandatory reporting rules.',tags:['Trump','Deregulation','Innovation','Cybersecurity']},
+    {date:'2026-05-07',title:'EU AI Act Omnibus Provisional Agreement',level:'国家/联盟',country:'欧盟',publisher:'Council of the EU, European Parliament',source:'https://pressreview.eu/eu-ai-act-omnibus-deal-high-risk-delay-december-2027-nudification-ban-14-may-2026/',highlights:['Delays high-risk AI system compliance to December 2, 2027','Adds prohibition on AI \'nudification\' apps','Postpones certain requirements to August 2, 2028','Simplifies selected aspects while maintaining core principles'],diff:'The Omnibus significantly extends the original AI Act timeline (high-risk was August 2, 2026). This 16-month delay gives businesses more preparation time but adds new prohibitions on deepfake/nudification tools not in the original text.',tags:['AI Act','High-Risk Delay','Deepfake','Nudification Ban']},
+    {date:'2026-02-15',title:'National AI Strategy 2.0 Update',level:'国家',country:'新加坡',publisher:'Ministry of Digital Development and Information, Singapore',source:'https://www.mddi.gov.sg/newsroom/update-to-singapore-s-national-ai-strategy--refreshed-priorities-to-harness-ai-for-the-public-good-factsheet/',highlights:['10 refreshed priorities across NAIS Enablers','National AI Council (NAIC) established, chaired by PM Wong','Focus on harnessing AI for public good','Builds on progress since NAIS 2.0'],diff:'Updates the 2023 NAIS 2.0 with refreshed priorities. The establishment of the National AI Council at Prime Minister level signals elevated political commitment. More emphasis on governance and public sector deployment than the previous version.',tags:['Singapore','NAIS 2.0','Public Good','Governance']},
+    {date:'2026-01-10',title:'AI Safety Bill Enacted',level:'国家',country:'英国',publisher:'UK Parliament',source:'https://zennews24.co.uk/article/uk-passes-landmark-ai-safety-bill-into-law/',highlights:['Covers AI systems across 14 designated high-risk sectors','Civil penalties up to £17 million or 4% of global turnover','AI Safety Institute evaluates frontier models before and after deployment','Includes healthcare, criminal justice, financial services, critical infrastructure'],diff:'Marks a shift from the UK\'s previous principles-based, non-legislative approach to binding statutory requirements. Unlike the EU AI Act\'s broad scope, the UK bill focuses specifically on frontier models and high-risk sectors, creating a more targeted regime.',tags:['UK','AI Safety','Frontier Models','High-Risk Sectors']}
+];
+
+let currentTab = 'domestic';
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return (d.getMonth() + 1) + '月' + d.getDate() + '日';
+}
+
+function getToday() { return '2026-07-06'; }
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-domestic').className = tab === 'domestic' ? 'tab-active py-4 px-2 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:text-gray-700 transition' : 'py-4 px-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition';
+    document.getElementById('tab-international').className = tab === 'international' ? 'tab-active py-4 px-2 text-sm font-medium text-gray-900 border-b-2 border-transparent hover:text-gray-700 transition' : 'py-4 px-2 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700 transition';
+    renderContent();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderTimeline(policies) {
+    const today = getToday();
+    const todayPolicies = policies.filter(function(p) { return p.date === today; });
+    const julyPolicies = policies.filter(function(p) { return p.date.startsWith('2026-07'); });
+    let todayHtml = '';
+    if (todayPolicies.length === 0) {
+        todayHtml = '<div class="ml-8 text-gray-500 py-4">今日暂无新政策发布（截至2026年7月6日）</div>';
+    } else {
+        todayHtml = todayPolicies.map(function(p) {
+            return '<div class="relative mb-6 ml-8"><div class="timeline-dot" style="top:4px"></div><div class="bg-blue-50 rounded-lg p-4 border-l-4 border-blue-500"><div class="flex items-center justify-between mb-2"><span class="text-sm font-semibold text-blue-700">' + formatDate(p.date) + '</span><span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">' + p.level + '</span></div><h3 class="font-medium text-gray-900">' + p.title + '</h3><p class="text-sm text-gray-600 mt-1">' + p.publisher + '</p></div></div>';
+        }).join('');
+    }
+    let julyHtml = julyPolicies.map(function(p) {
+        return '<div class="flex items-center text-sm"><span class="w-16 text-gray-500">' + formatDate(p.date) + '</span><span class="w-2 h-2 rounded-full bg-blue-500 mx-3"></span><span class="text-gray-700 truncate">' + p.title + '</span></div>';
+    }).join('');
+    if (julyPolicies.length === 0) julyHtml = '<div class="text-gray-500 text-sm">本月暂无更多政策</div>';
+    return '<div class="bg-white rounded-xl shadow-md p-6 mb-8"><h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center"><svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>今日政策发布时间线</h2><div class="relative pl-4"><div class="timeline-line"></div>' + todayHtml + '<div class="ml-8 mt-6 pt-4 border-t border-gray-200"><h3 class="text-sm font-semibold text-gray-700 mb-3">本月发布政策一览</h3><div class="space-y-2">' + julyHtml + '</div></div></div></div>';
+}
+
+function renderDomestic() {
+    const julyPolicies = domesticPolicies.filter(function(p) { return p.date.startsWith('2026-07'); });
+    const otherPolicies = domesticPolicies.filter(function(p) { return !p.date.startsWith('2026-07'); });
+    let julyDetails = julyPolicies.map(function(p) {
+        const highlights = p.highlights.map(function(h) { return '<li>' + h + '</li>'; }).join('');
+        const tags = p.tags.map(function(t) { return '<span class="keyword-tag text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200">' + t + '</span>'; }).join('');
+        return '<div class="border rounded-xl p-6 card-hover bg-gradient-to-r from-white to-gray-50"><div class="flex flex-wrap items-start justify-between mb-4"><div class="flex-1"><div class="flex items-center space-x-2 mb-2"><span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">' + p.level + '</span><span class="bg-gray-100 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded">' + p.region + '</span><span class="text-sm text-gray-500">' + p.date + '</span></div><h3 class="text-lg font-bold text-gray-900">' + p.title + '</h3></div></div><div class="grid md:grid-cols-2 gap-4 mb-4 text-sm"><div><span class="font-semibold text-gray-700">发布单位：</span><span class="text-gray-600">' + p.publisher + '</span></div><div><span class="font-semibold text-gray-700">监督单位：</span><span class="text-gray-600">' + p.supervisor + '</span></div></div><div class="mb-4"><h4 class="font-semibold text-gray-800 mb-2">核心要求：</h4><ul class="list-disc list-inside space-y-1 text-sm text-gray-600">' + highlights + '</ul></div><div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4 rounded-r-lg"><h4 class="font-semibold text-yellow-800 mb-1">与前政策的区别：</h4><p class="text-sm text-yellow-700">' + p.diff + '</p></div><div class="flex items-center justify-between"><div class="flex flex-wrap gap-2">' + tags + '</div><a href="' + p.source + '" target="_blank" class="source-link text-sm flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>数据来源</a></div></div>';
+    }).join('');
+    let otherDetails = otherPolicies.map(function(p) {
+        return '<div class="border rounded-lg p-4 card-hover"><div class="flex items-center space-x-2 mb-2"><span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">' + p.region + '</span><span class="text-xs text-gray-500">' + p.date + '</span></div><h3 class="font-medium text-gray-900 text-sm mb-2">' + p.title + '</h3><p class="text-xs text-gray-600 mb-2">发布：' + p.publisher + '</p><a href="' + p.source + '" target="_blank" class="source-link text-xs">查看来源 &rarr;</a></div>';
+    }).join('');
+    return '<div id="domestic-content">' + renderTimeline(domesticPolicies) + '<div class="bg-white rounded-xl shadow-md p-6 mb-8"><h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center"><svg class="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>2026年7月国内政策详情</h2><div class="space-y-6">' + julyDetails + '</div></div><div class="bg-white rounded-xl shadow-md p-6 mb-8"><h2 class="text-xl font-bold text-gray-900 mb-6">其他地方政策（2026年6月及以前）</h2><div class="grid md:grid-cols-2 gap-4">' + otherDetails + '</div></div>' + renderCharts('domestic') + '</div>';
+}
+
+function renderInternational() {
+    const julyPolicies = internationalPolicies.filter(function(p) { return p.date.startsWith('2026-07'); });
+    const otherPolicies = internationalPolicies.filter(function(p) { return !p.date.startsWith('2026-07'); });
+    const flagMap = {'欧盟':'&#127466;&#127482;','美国':'&#127482;&#127480;','加拿大':'&#127464;&#127462;','英国':'&#127468;&#127463;','新加坡':'&#127480;&#127468;'};
+    let julyDetails = julyPolicies.map(function(p) {
+        const highlights = p.highlights.map(function(h) { return '<li>' + h + '</li>'; }).join('');
+        const tags = p.tags.map(function(t) { return '<span class="keyword-tag text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded-full border border-blue-200">' + t + '</span>'; }).join('');
+        const flag = flagMap[p.country] || '&#127760;';
+        return '<div class="border rounded-xl p-6 card-hover bg-gradient-to-r from-white to-blue-50"><div class="flex items-center space-x-3 mb-4"><span class="text-2xl">' + flag + '</span><div><div class="flex items-center space-x-2"><span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded">' + p.country + '</span><span class="text-sm text-gray-500">' + p.date + '</span></div><h3 class="text-lg font-bold text-gray-900">' + p.title + '</h3></div></div><div class="mb-4 text-sm"><span class="font-semibold text-gray-700">发布单位：</span><span class="text-gray-600">' + p.publisher + '</span></div><div class="mb-4"><h4 class="font-semibold text-gray-800 mb-2">详细政策要求：</h4><ul class="list-disc list-inside space-y-1 text-sm text-gray-600">' + highlights + '</ul></div><div class="bg-indigo-50 border-l-4 border-indigo-400 p-4 mb-4 rounded-r-lg"><h4 class="font-semibold text-indigo-800 mb-1">政策变化对比：</h4><p class="text-sm text-indigo-700">' + p.diff + '</p></div><div class="flex items-center justify-between"><div class="flex flex-wrap gap-2">' + tags + '</div><a href="' + p.source + '" target="_blank" class="source-link text-sm flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>数据来源</a></div></div>';
+    }).join('');
+    let otherDetails = otherPolicies.map(function(p) {
+        const flag = flagMap[p.country] || '&#127760;';
+        return '<div class="border rounded-lg p-4 card-hover"><div class="flex items-center space-x-2 mb-2"><span class="text-lg">' + flag + '</span><span class="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">' + p.country + '</span><span class="text-xs text-gray-500">' + p.date + '</span></div><h3 class="font-medium text-gray-900 text-sm mb-2">' + p.title + '</h3><a href="' + p.source + '" target="_blank" class="source-link text-xs">查看来源 &rarr;</a></div>';
+    }).join('');
+    return '<div id="international-content">' + renderTimeline(internationalPolicies) + '<div class="bg-white rounded-xl shadow-md p-6 mb-8"><h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center"><svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>2026年7月国外政策详情</h2><div class="space-y-6">' + julyDetails + '</div></div><div class="bg-white rounded-xl shadow-md p-6 mb-8"><h2 class="text-xl font-bold text-gray-900 mb-6">其他国外政策（2026年6月及以前）</h2><div class="grid md:grid-cols-2 gap-4">' + otherDetails + '</div></div>' + renderCharts('international') + '</div>';
+}
+
+function renderCharts(type) {
+    const isDomestic = type === 'domestic';
+    const policies = isDomestic ? domesticPolicies : internationalPolicies;
+    const allTags = {};
+    policies.forEach(function(p) { p.tags.forEach(function(t) { allTags[t] = (allTags[t] || 0) + 1; }); });
+    const sortedTags = Object.entries(allTags).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+    const regionDist = {};
+    policies.forEach(function(p) { const key = isDomestic ? p.region : p.country; regionDist[key] = (regionDist[key] || 0) + 1; });
+    const monthNames = {'2026-01':'1月','2026-02':'2月','2026-03':'3月','2026-04':'4月','2026-05':'5月','2026-06':'6月','2026-07':'7月'};
+    const dateCount = {};
+    policies.forEach(function(p) { const month = p.date.substring(0,7); dateCount[month] = (dateCount[month] || 0) + 1; });
+    const months = Object.keys(dateCount).sort();
+    const hotspots = isDomestic ? '<div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-100"><div class="text-2xl mb-2">&#128274;</div><h4 class="font-bold text-gray-900 mb-2">安全监管强化</h4><p class="text-sm text-gray-600">从算法备案到拟人化服务管理，监管链条不断延伸。7月15日即将施行的《人工智能拟人化互动服务管理暂行办法》标志着数字人监管进入实质阶段。</p></div><div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-lg p-4 border border-blue-100"><div class="text-2xl mb-2">&#127959;</div><h4 class="font-bold text-gray-900 mb-2">基础设施建设</h4><p class="text-sm text-gray-600">\'AI+信息通信\'实施意见将AI与5G、算力网络深度融合。北京发布AI for Science方案，强化自主实验室与科学数据供给。</p></div><div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-100"><div class="text-2xl mb-2">&#9878;</div><h4 class="font-bold text-gray-900 mb-2">伦理审查制度化</h4><p class="text-sm text-gray-600">十部门联合印发伦理审查办法，在10个先导区省份试点。从通用科技伦理向AI专项伦理深化，建立伦理委员会制度。</p></div>' : '<div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-100"><div class="text-2xl mb-2">&#128220;</div><h4 class="font-bold text-gray-900 mb-2">监管框架分化</h4><p class="text-sm text-gray-600">欧盟通过Omnibus简化AI Act实施，英国则从原则导向转向立法约束，美国特朗普政府明确取消强制许可，全球监管路径显著分化。</p></div><div class="bg-gradient-to-br from-orange-50 to-yellow-50 rounded-lg p-4 border border-orange-100"><div class="text-2xl mb-2">&#128737;</div><h4 class="font-bold text-gray-900 mb-2">安全与网络安全</h4><p class="text-sm text-gray-600">美国EO聚焦AI网络安全，英国AI安全法案设立前沿模型评估机制，加拿大新战略将信任列为第一原则，安全议题持续升温。</p></div><div class="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-lg p-4 border border-teal-100"><div class="text-2xl mb-2">&#127760;</div><h4 class="font-bold text-gray-900 mb-2">国家AI战略更新</h4><p class="text-sm text-gray-600">加拿大、新加坡相继更新国家AI战略，从纯技术研究转向社会融合与公共福祉，AI治理的政治优先级显著提升。</p></div>';
+    return '<div class="grid md:grid-cols-2 gap-6 mb-8"><div class="bg-white rounded-xl shadow-md p-6"><h3 class="text-lg font-bold text-gray-900 mb-4">政策热频关键词 TOP10</h3><div class="chart-container"><canvas id="keywordChart-' + type + '"></canvas></div></div><div class="bg-white rounded-xl shadow-md p-6"><h3 class="text-lg font-bold text-gray-900 mb-4">' + (isDomestic ? '政策发布地区分布' : '政策发布国家/地区分布') + '</h3><div class="chart-container"><canvas id="regionChart-' + type + '"></canvas></div></div></div><div class="bg-white rounded-xl shadow-md p-6 mb-8"><h3 class="text-lg font-bold text-gray-900 mb-4">政策发布月度趋势</h3><div class="chart-container"><canvas id="trendChart-' + type + '"></canvas></div></div><div class="bg-white rounded-xl shadow-md p-6 mb-8"><h3 class="text-lg font-bold text-gray-900 mb-4">政策建设热点内容摘要</h3><div class="grid md:grid-cols-3 gap-4" id="hotspots-' + type + '">' + hotspots + '</div></div>';
+}
+
+function initCharts(type) {
+    const isDomestic = type === 'domestic';
+    const policies = isDomestic ? domesticPolicies : internationalPolicies;
+    const allTags = {};
+    policies.forEach(function(p) { p.tags.forEach(function(t) { allTags[t] = (allTags[t] || 0) + 1; }); });
+    const sortedTags = Object.entries(allTags).sort(function(a,b){return b[1]-a[1];}).slice(0,10);
+    const regionDist = {};
+    policies.forEach(function(p) { const key = isDomestic ? p.region : p.country; regionDist[key] = (regionDist[key] || 0) + 1; });
+    const monthNames = {'2026-01':'1月','2026-02':'2月','2026-03':'3月','2026-04':'4月','2026-05':'5月','2026-06':'6月','2026-07':'7月'};
+    const dateCount = {};
+    policies.forEach(function(p) { const month = p.date.substring(0,7); dateCount[month] = (dateCount[month] || 0) + 1; });
+    const months = Object.keys(dateCount).sort();
+    const kwCanvas = document.getElementById('keywordChart-' + type);
+    if (kwCanvas) {
+        new Chart(kwCanvas, {type:'bar',data:{labels:sortedTags.map(function(t){return t[0];}),datasets:[{label:'出现频次',data:sortedTags.map(function(t){return t[1];}),backgroundColor:isDomestic?'rgba(239,68,68,0.7)':'rgba(59,130,246,0.7)',borderColor:isDomestic?'rgb(239,68,68)':'rgb(59,130,246)',borderWidth:1}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{stepSize:1}}}});
+    }
+    const regCanvas = document.getElementById('regionChart-' + type);
+    if (regCanvas) {
+        new Chart(regCanvas, {type:'doughnut',data:{labels:Object.keys(regionDist),datasets:[{data:Object.values(regionDist),backgroundColor:['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#84cc16','#f97316','#6366f1']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right'}}}});
+    }
+    const trendCanvas = document.getElementById('trendChart-' + type);
+    if (trendCanvas) {
+        new Chart(trendCanvas, {type:'line',data:{labels:months.map(function(m){return monthNames[m]||m;}),datasets:[{label:'政策发布数量',data:months.map(function(m){return dateCount[m];}),borderColor:isDomestic?'#ef4444':'#3b82f6',backgroundColor:isDomestic?'rgba(239,68,68,0.1)':'rgba(59,130,246,0.1)',fill:true,tension:0.4,pointRadius:5,pointBackgroundColor:isDomestic?'#ef4444':'#3b82f6'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});
+    }
+}
+
+function renderContent() {
+    const container = document.getElementById('content-area');
+    container.innerHTML = currentTab === 'domestic' ? renderDomestic() : renderInternational();
+    setTimeout(function() { initCharts(currentTab); }, 100);
+}
+
+async function exportPDF() {
+    const btn = document.querySelector('button[onclick="exportPDF()"]');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<span>生成中...</span>';
+    btn.disabled = true;
+    try {
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        switchTab('domestic');
+        await new Promise(function(r){setTimeout(r,1500);});
+        const domesticEl = document.getElementById('domestic-content');
+        const domesticCanvas = await html2canvas(domesticEl,{scale:2,useCORS:true,logging:false,windowWidth:1200});
+        const domImgData = domesticCanvas.toDataURL('image/png');
+        const domImgHeight = (domesticCanvas.height * pageWidth) / domesticCanvas.width;
+        let heightLeft = domImgHeight;
+        let position = 0;
+        pdf.addImage(domImgData,'PNG',0,position,pageWidth,domImgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) { position = heightLeft - domImgHeight; pdf.addPage(); pdf.addImage(domImgData,'PNG',0,position,pageWidth,domImgHeight); heightLeft -= pageHeight; }
+        pdf.addPage();
+        switchTab('international');
+        await new Promise(function(r){setTimeout(r,1500);});
+        const intlEl = document.getElementById('international-content');
+        const intlCanvas = await html2canvas(intlEl,{scale:2,useCORS:true,logging:false,windowWidth:1200});
+        const intlImgData = intlCanvas.toDataURL('image/png');
+        const intlImgHeight = (intlCanvas.height * pageWidth) / intlCanvas.width;
+        heightLeft = intlImgHeight;
+        position = 0;
+        pdf.addImage(intlImgData,'PNG',0,position,pageWidth,intlImgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) { position = heightLeft - intlImgHeight; pdf.addPage(); pdf.addImage(intlImgData,'PNG',0,position,pageWidth,intlImgHeight); heightLeft -= pageHeight; }
+        pdf.save('AI政策分析报告_2026年7月.pdf');
+        switchTab('domestic');
+    } catch (err) { console.error(err); alert('PDF生成失败：' + err.message); }
+    finally { btn.innerHTML = originalText; btn.disabled = false; }
+}
+
+document.addEventListener('DOMContentLoaded', function() { renderContent(); });
+</script>
 </body>
 </html>
